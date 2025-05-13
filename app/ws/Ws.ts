@@ -16,10 +16,13 @@ export class Ws {
                 console.log('收到消息:', message.toString());
 
                 // 回复客户端
-                ws.send(`你说的是: ${message}`);
+                ws.send(`${message}`);
             });
 
             ws.send('欢迎连接 WebSocket 服务！');
         });
+        ws.on('close', () => {
+            console.log("连接断开");
+        })
     }
 }

@@ -14,7 +14,7 @@ export class ServerWebSocket {
     start(port: number) {
         const ws = new WebSocket.Server({ server: this.server });
         new Ws(ws);
-        this.server.listen(port, () => {
+        this.server.listen(port, () => { 
             console.log(`ws服务地址:${chalk.green(`http://localhost:${port}`)}`);
         });
     }

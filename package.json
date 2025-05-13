@@ -4,7 +4,9 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "dev": "rm -rf && tsc && nodemon ./dist/main.js"
+    "tsc": "rm -rf && tsc --watch",
+    "dev": "concurrently \"tsc --watch\" \"nodemon ./dist/main.js\"",
+    "debug": "node ./dist/main.js"
   },
   "keywords": [],
   "author": "",
