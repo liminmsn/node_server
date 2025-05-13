@@ -1,9 +1,7 @@
-import type { AddressInfo } from 'net';
 import type { Request, Response, Express } from 'express';
+import { ServerWebSocket } from './ServerWebSocket';
 import express from "express";
 import chalk from 'chalk';
-import { ServerWebSocket } from './ServerWebSocket';
-import { Ws } from '../ws/Wss';
 
 //核心http服务类
 export class Server {
@@ -25,7 +23,7 @@ export class Server {
     }
     start() {
         Server.app.listen(this.port, () => {
-            ServerWebSocket.new(Server.app, new Ws());
+            ServerWebSocket.new(Server.app);
             console.log(chalk.blue(`系统平台:${process.platform}-${process.arch}`));
             console.log(chalk.blue(`node版本:${process.version}`));
             console.log(`服务器地址: ${chalk.green(`http://localhost:${this.port}`)}`);
