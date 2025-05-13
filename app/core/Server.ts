@@ -2,11 +2,13 @@ import type { AddressInfo } from 'net';
 import type { Request, Response, Express } from 'express';
 import express from "express";
 import chalk from 'chalk';
+import { ServerWebSocket } from './ServerWebSocket';
+import { Ws } from '../ws/Wss';
 
-//核心web服务类
+//核心http服务类
 export class Server {
     static app: Express;
-    port = 0;
+    private port = 0;
     constructor(port: number) {
         Server.app = express();
         this.port = port;
@@ -22,13 +24,11 @@ export class Server {
         return this;
     }
     start() {
-        const server = Server.app.listen(this.port, () => {
+        Server.app.listen(this.port, () => {
+            ServerWebSocket.new(Server.app, new Ws());
             console.log(chalk.blue(`系统平台:${process.platform}-${process.arch}`));
             console.log(chalk.blue(`node版本:${process.version}`));
-            const address = server.address() as AddressInfo;
-            let host = address.address;
-            if (host === '::') host = 'localhost'; // 兼容 IPv6
-            console.log(`服务器地址: ${chalk.green(`http://${host}:${address.port}`)}`);
+            console.log(`服务器地址: ${chalk.green(`http://localhost:${this.port}`)}`);
         });
     }
 }

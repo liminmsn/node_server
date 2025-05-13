@@ -6,7 +6,6 @@ import { ServerWebSocket } from "../core/ServerWebSocket";
 @ServerItem.Type("GET")
 export class Index extends ServerItem {
     call(req: Request, res: Response): void {
-        new ServerWebSocket(Server.app);
-        res.send("服务启动成功！");
+        res.send("http服务,ws服务已经启动");
     }
 }
