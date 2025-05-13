@@ -1,18 +1,20 @@
-import http from 'http';
 import WebSocket from 'ws';
-import type { Express } from 'express';
+import http from 'http';
+import { Ws } from '../ws/Ws';
 
 export type WssType = WebSocket.Server<typeof WebSocket, typeof http.IncomingMessage>;
+export type ServerWebSocketType = http.Server<typeof http.IncomingMessage, typeof http.ServerResponse>;
 //Socker服务类
 export class ServerWebSocket {
-    private static _wss: WssType;
-    public static get wss() { return ServerWebSocket._wss }
-    constructor(app: Express) {
-        const server = http.createServer(app)
-        ServerWebSocket._wss = new WebSocket.Server({ server });
-    }
+    private static _ws: WssType;
+    public static get ws() { return ServerWebSocket._ws }
     //创建ws服务
-    static new(app: Express) {
-        if (this._wss == null) new ServerWebSocket(app);
+    static new(server: ServerWebSocketType) {
+        new ServerWebSocket(server);
+    }
+    constructor(server: ServerWebSocketType) {
+        ServerWebSocket._ws = new WebSocket.Server({ server });
+        const ws = ServerWebSocket._ws;
+        new Ws();
     }
 }
