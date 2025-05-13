@@ -2,8 +2,8 @@ import { ServerWebSocket, WssType } from "../core/ServerWebSocket";
 
 export class Ws {
     private ws: WssType;
-    constructor() {
-        this.ws = ServerWebSocket.ws;
+    constructor(ws: WssType) {
+        this.ws = ws;
         this.init();
     }
     init() {
