@@ -7,15 +7,11 @@ export class Ws {
     constructor(ws: WssType) {
         ws.on('connection', (client) => {
             console.log(chalk.bgRed('客户端链接'));
-            // client.send('你已经加入!');
             WsMsgProcess.init(client);
 
-            // 心跳检测相关
+            // 心跳
             let isAlive = true;
-            client.on('pong', () => {
-                isAlive = true;
-            });
-            // 定时发送 ping
+            client.on('pong', () => isAlive = true);
             const interval = setInterval(() => {
                 console.log('发送ping');
                 if (!isAlive) {
@@ -41,7 +37,7 @@ interface WsMsgType<T> {
 export class WsMsgProcess {
     static data = new WsData();
     static init(client: WebSocket) {
-        const objList: any[] = [WsLogin,WsHallCount];
+        const objList: any[] = [WsLogin, WsHallCount];
         client.on('message', (message: string) => {
             console.log('收到消息:' + chalk.greenBright(message.toString()));
             try {

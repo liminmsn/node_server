@@ -7,7 +7,8 @@ export class WsData {
     joinHall(user: WsUser) {
         if (!this.hall.has(user.id)) {
             this.hall.set(user.id, user);
-            user.ws.send(`欢迎${user.id}进入游戏大厅`)
+            // user.ws.send(`欢迎${user.id}进入游戏大厅`)
+            this.noticeAllUser(`欢迎${user.id}进入游戏大厅`);
         }
     }
     hallCount() {
@@ -42,7 +43,14 @@ export class WsData {
             });
         }
     }
-
+    noticeAllUser(msg: string) {
+        this.hall.forEach(usr => {
+            usr.ws.send(JSON.stringify({
+                command: "notall",
+                data: msg
+            }))
+        })
+    }
     leaveAllRooms(userId: string) {
         this.rooms.forEach(room => {
             room.users.delete(userId);
