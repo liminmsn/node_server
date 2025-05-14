@@ -1,3 +1,4 @@
+import type WebSocket from 'ws';
 export class WsData {
     private hall: Map<String, WsUser> = new Map();
     private rooms: Map<string, WsRoom> = new Map();
@@ -6,15 +7,12 @@ export class WsData {
     joinHall(user: WsUser) {
         if (!this.hall.has(user.id)) {
             this.hall.set(user.id, user);
+            user.ws.send(`欢迎${user.id}进入游戏大厅`)
         }
     }
 
-    generateId(): string {
-        return Math.random().toString(36).slice(2, 10);
-    }
-
     createRoom(userId: string) {
-        const roomId = this.generateId();
+        const roomId = Math.random().toString(36).slice(2, 10);
         this.rooms.set(roomId, { id: roomId, users: new Set([userId]) });
         this.hall.get(userId)!.roomId = roomId;
         this.hall.get(userId)!.ws.send(`房间已创建,ID:${roomId}`);

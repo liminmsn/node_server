@@ -1,5 +1,5 @@
 import { WssType } from "../core/ServerWebSocket";
-import { WsData } from "./WsData";
+import { WsData, WsUser } from "./WsData";
 import type WebSocket from 'ws';
 import chalk from 'chalk';
 
@@ -9,6 +9,24 @@ export class Ws {
             console.log(chalk.bgRed('客户端加入'));
             // client.send('你已经加入!');
             WsMsgProcess.init(client);
+
+            // 心跳检测相关
+            let isAlive = true;
+            client.on('pong', () => {
+                isAlive = true;
+            });
+            // 定时发送 ping
+            const interval = setInterval(() => {
+                console.log('发送ping');
+                if (!isAlive) {
+                    console.log('心跳超时，断开连接');
+                    client.terminate();
+                    clearInterval(interval);
+                    return;
+                }
+                isAlive = false;
+                client.ping();
+            }, 300000); // 30秒心跳一次
         });
 
     }
@@ -25,7 +43,7 @@ export class WsMsgProcess {
     static init(client: WebSocket) {
         const objList: any[] = [WsLogin];
         client.on('message', (message: string) => {
-            console.log('收到消息:', message.toString());
+            console.log('收到消息:' + chalk.greenBright(message.toString()));
             try {
                 const { command, data } = JSON.parse(message) as WsMsgType<any>;
                 const itemClass = objList.filter(item => item['commd'] == command)[0] as typeof WsMsgProcessItem;
@@ -55,6 +73,7 @@ export class WsLogin extends WsMsgProcessItem {
     static commd = 'login'
     constructor(public client: WebSocket, public data: any) { super(client, data) }
     run(): void {
+        WsMsgProcess.data.joinHall(new WsUser(this.data['id'], this.client, ''))
         console.log("登录了", JSON.stringify(this.data));
     }
 }
