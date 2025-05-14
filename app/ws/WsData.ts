@@ -10,6 +10,9 @@ export class WsData {
             user.ws.send(`欢迎${user.id}进入游戏大厅`)
         }
     }
+    hallCount() {
+        return this.hall.size;
+    }
 
     createRoom(userId: string) {
         const roomId = Math.random().toString(36).slice(2, 10);
